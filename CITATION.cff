@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: "regular-black-hole-dynamics: exact time-dependent spherical solutions of a two-vector model, with certificates"
+message: "This is an AI-produced research artifact under adversarial cross-review; it has not been reviewed by a human domain expert, and no historical priority is claimed. See docs/PROVENANCE.md."
+authors:
+  - family-names: "Jones"
+    given-names: "Steven Ware"
+repository-code: "https://github.com/stevenwarejones/regular-black-hole-dynamics"
+license: MIT
+date-released: "2026-09-13"
+keywords:
+  - regular-black-holes
+  - vector-tensor-gravity
+  - exact-solutions
+  - eddington-finkelstein
+  - proof-certificates
+  - exact-arithmetic
+  - reproducible-research
+references:
+  - type: article
+    title: "Regular black holes without mass-inflation instability and gravastars from modified gravity"
+    authors:
+      - family-names: "Eichhorn"
+        given-names: "Astrid"
+      - family-names: "Fernandes"
+        given-names: "Pedro G. S."
+    identifiers:
+      - type: other
+        value: "arXiv:2508.00686"
+    notes: "Origin of the action and the static background specialized here."
