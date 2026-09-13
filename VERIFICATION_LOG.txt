@@ -1,4 +1,4 @@
-# Verification log — 2026-09-13T15:11:44Z
+# Verification log — 2026-09-13T18:48:38Z
 # host: Linux aarch64; python: Python 3.10.12
 # sympy 1.14.0 numpy 2.2.6
 
@@ -51,20 +51,20 @@ regular-black-hole-dynamics : verification pipeline
 
 >>> exact solution (primary)  (proofs/verify_exact_solution.py)
 ----------------------------------------------------------------------
---- exact solution (primary): PASS  (37.5s)
+--- exact solution (primary): PASS  (40.3s)
 
 >>> mass scope (constant-M)  (proofs/verify_mass_scope.py)
 ----------------------------------------------------------------------
---- mass scope (constant-M): PASS  (19.1s)
+--- mass scope (constant-M): PASS  (20.3s)
 
 >>> invariant distinction  (proofs/invariant_distinction.py)
 ----------------------------------------------------------------------
---- invariant distinction: PASS  (0.7s)
+--- invariant distinction: PASS  (0.9s)
 
 ======================================================================
 RESULT: PASS (all 3 certificates)
 PIPELINE_EXIT=0
 
 # pytest
-.........                                                                [100%]
-9 passed in 40.46s
+...........                                                              [100%]
+11 passed in 41.89s

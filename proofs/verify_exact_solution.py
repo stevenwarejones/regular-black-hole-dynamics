@@ -29,17 +29,20 @@ def main() -> int:
     ok, results = certificate.verify_vacuum_symbolic()
 
     print("\nsecondary regression check (not a proof):")
-    certificate.sample_regression()
+    samples_ok = certificate.sample_regression()
+    ok = ok and samples_ok
 
     print()
     if ok:
         print("PASS: all eight reduced Euler-Lagrange residuals are IDENTICALLY "
               "ZERO for arbitrary smooth q(v) on the stated patch.")
         return 0
-    print("FAIL: a residual did not reduce to zero. Offending fields:")
+    print("FAIL:")
+    if not samples_ok:
+        print("  secondary sample regression did not vanish (see above).")
     for fn, num in results.items():
         if num != 0:
-            print(f"  {fn}: {num}")
+            print(f"  residual E[{fn}] did not reduce to zero: {num}")
     return 1
 
 

@@ -56,3 +56,30 @@ def test_checker_rejects_higher_mass_derivative():
 
 def test_checker_accepts_true_zero():
     assert certificate.is_identically_zero(sp.Integer(0))
+
+
+def _load_verify_exact_solution():
+    import importlib.util
+    path = os.path.join(os.path.dirname(__file__), "..", "proofs", "verify_exact_solution.py")
+    spec = importlib.util.spec_from_file_location("verify_exact_solution", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_pipeline_fails_if_sample_regression_fails(monkeypatch):
+    # The primary script must incorporate the secondary regression result: if the
+    # sample check fails, main() must exit nonzero (reproduces the review finding).
+    mod = _load_verify_exact_solution()
+    monkeypatch.setattr(mod.certificate, "check_theta_independence", lambda *a, **k: True)
+    monkeypatch.setattr(mod.certificate, "verify_vacuum_symbolic", lambda *a, **k: (True, {}))
+    monkeypatch.setattr(mod.certificate, "sample_regression", lambda *a, **k: False)
+    assert mod.main() != 0
+
+
+def test_pipeline_passes_when_all_subchecks_pass(monkeypatch):
+    mod = _load_verify_exact_solution()
+    monkeypatch.setattr(mod.certificate, "check_theta_independence", lambda *a, **k: True)
+    monkeypatch.setattr(mod.certificate, "verify_vacuum_symbolic", lambda *a, **k: (True, {}))
+    monkeypatch.setattr(mod.certificate, "sample_regression", lambda *a, **k: True)
+    assert mod.main() == 0
