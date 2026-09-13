@@ -6,9 +6,10 @@
   only that a bounded literature search did not surface a duplicate; that is not
   a priority certificate.
 - The mathematics is checked by machine: the equations of motion are rebuilt
-  from the action, and the solution is verified against them in **exact rational
-  arithmetic** (no numerical tolerance). The certificates are the evidence; run
-  them (`python run_checks.py`) rather than trusting this document.
+  from the action, and the solution is verified against them as **symbolic
+  identities** in independent function jets (no sampling, no numerical
+  tolerance). The certificates are the evidence; run them
+  (`python run_checks.py`) rather than trusting this document.
 - The action and static background originate in prior published work
   (`RELATIONSHIP_TO_PRIOR_WORK.md`, `SOURCES.md`). This repository does not
   independently re-derive that prior work.
