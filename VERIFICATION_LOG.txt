@@ -1,0 +1,70 @@
+# Verification log — 2026-09-13T15:11:44Z
+# host: Linux aarch64; python: Python 3.10.12
+# sympy 1.14.0 numpy 2.2.6
+
+[verify_exact_solution] symbolic Euler-Lagrange identities
+Eight independent fields including the ungauged areal radius Rf.
+q(v) and its derivatives are INDEPENDENT symbols (no fixed profile).
+
+numerical theta-independence sanity check:
+  theta-independence (numerical sanity) over 6 states -> OK
+
+symbolic residuals on the solution (constant M, arbitrary q(v)):
+  E[g00 ] (indep. q-jets none) -> IDENTICALLY ZERO
+  E[g01 ] (indep. q-jets [0]) -> IDENTICALLY ZERO
+  E[g11 ] (indep. q-jets [0, 1]) -> IDENTICALLY ZERO
+  E[Rf  ] (indep. q-jets [0]) -> IDENTICALLY ZERO
+  E[A0  ] (indep. q-jets none) -> IDENTICALLY ZERO
+  E[A1  ] (indep. q-jets [0]) -> IDENTICALLY ZERO
+  E[B0  ] (indep. q-jets none) -> IDENTICALLY ZERO
+  E[B1  ] (indep. q-jets [0]) -> IDENTICALLY ZERO
+
+secondary regression check (not a proof):
+  sample regression over 7 points -> ok
+
+PASS: all eight reduced Euler-Lagrange residuals are IDENTICALLY ZERO for arbitrary smooth q(v) on the stated patch.
+[verify_mass_scope] M -> M(v) with independent mass and regulator jets
+
+  E[g11] - (-2*M'(v)) identically zero : True
+  higher mass jets in E[g11] (want none): none
+  regulator jets in E[g11]              : [0, 1]
+  E[g00 ] identically zero (indep. M',q jets): True
+  E[g01 ] identically zero (indep. M',q jets): True
+  E[Rf  ] identically zero (indep. M',q jets): True
+  E[A0  ] identically zero (indep. M',q jets): True
+  E[A1  ] identically zero (indep. M',q jets): True
+  E[B0  ] identically zero (indep. M',q jets): True
+  E[B1  ] identically zero (indep. M',q jets): True
+
+PASS: M -> M(v) sources exactly E[g11] = -2 M'(v) (full expression, no higher-derivative terms); all other equations stay vacuum. The no-matter claim is correctly scoped to constant M.
+[invariant_distinction] first variation of (nabla r)^2 about a static background
+
+  computed delta I : 4*M*ell**2*p*r**2/(2*ell**2*q0 + r**3)**2
+  expected         : 4*M*ell**2*p*r**2/(2*ell**2*q0 + r**3)**2
+  match            : True
+  value at (M,r,ell,q0,p)=(1,3,1,3,1): 4/121  (nonzero: True)
+
+PASS: the first variation matches the displayed expression and is nonzero for M > 0; the perturbation about the static background is not pure gauge (delta Rf = 0 forces xi^r = 0, so a gauge mode would give zero).
+======================================================================
+regular-black-hole-dynamics : verification pipeline
+======================================================================
+
+>>> exact solution (primary)  (proofs/verify_exact_solution.py)
+----------------------------------------------------------------------
+--- exact solution (primary): PASS  (37.5s)
+
+>>> mass scope (constant-M)  (proofs/verify_mass_scope.py)
+----------------------------------------------------------------------
+--- mass scope (constant-M): PASS  (19.1s)
+
+>>> invariant distinction  (proofs/invariant_distinction.py)
+----------------------------------------------------------------------
+--- invariant distinction: PASS  (0.7s)
+
+======================================================================
+RESULT: PASS (all 3 certificates)
+PIPELINE_EXIT=0
+
+# pytest
+.........                                                                [100%]
+9 passed in 40.46s

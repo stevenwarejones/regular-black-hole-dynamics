@@ -8,7 +8,7 @@ import hashlib, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", ".github"}  # CI config excluded
-SKIP_NAMES = {"hashes.txt"}
+SKIP_NAMES = {"hashes.txt", "VERIFICATION_LOG.txt"}  # transcript, not source
 INCLUDE_EXT = {".py", ".md", ".cff", ".txt", ".yml", ".yaml"}
 
 

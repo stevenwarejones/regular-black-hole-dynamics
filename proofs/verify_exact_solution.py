@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""PRIMARY CERTIFICATE.
+"""PRIMARY CERTIFICATE (symbolic identity).
 
-Verifies that the proposed time-dependent family (constant M, free q(v)) solves
-every Euler-Lagrange equation of the reduced two-vector action, in exact
-rational arithmetic, at several sample points. Exits nonzero on any failure.
+Proves that the time-dependent family (constant M, arbitrary smooth q(v)) solves
+every reduced Euler-Lagrange equation, by showing each residual is IDENTICALLY
+ZERO as a polynomial in independent regulator jets Q0, Q1, ... and the symbolic
+parameters r, M, ell. This is a proof for all smooth q on the stated patch, not
+an inference from samples.
 
-The Euler-Lagrange operator is derived from the action in src/rbh/model.py; the
-solution is defined in src/rbh/solution.py. Nothing here is imported from any
-external result --- the equations are rebuilt from the action.
+The equations of motion are rebuilt from the action in src/rbh/model.py; nothing
+is imported from an external derivation.
 """
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
@@ -15,26 +16,30 @@ from rbh import certificate
 
 
 def main() -> int:
-    print("[verify_exact_solution] reduced-action Euler-Lagrange residuals")
-    print("Eight independent fields including the ungauged areal radius Rf.\n")
+    print("[verify_exact_solution] symbolic Euler-Lagrange identities")
+    print("Eight independent fields including the ungauged areal radius Rf.")
+    print("q(v) and its derivatives are INDEPENDENT symbols (no fixed profile).\n")
 
-    print("theta-independence sanity check:")
+    print("numerical theta-independence sanity check:")
     if not certificate.check_theta_independence():
         print("FAIL: reduced density retains theta dependence.")
         return 1
 
-    print("\nexact-rational residuals on the solution (constant M):")
-    ok, results = certificate.verify_exact_solution()
+    print("\nsymbolic residuals on the solution (constant M, arbitrary q(v)):")
+    ok, results = certificate.verify_vacuum_symbolic()
+
+    print("\nsecondary regression check (not a proof):")
+    certificate.sample_regression()
 
     print()
     if ok:
-        print("PASS: all eight Euler-Lagrange residuals are EXACTLY ZERO on the "
-              "solution at every rational sample point.")
+        print("PASS: all eight reduced Euler-Lagrange residuals are IDENTICALLY "
+              "ZERO for arbitrary smooth q(v) on the stated patch.")
         return 0
-    print("FAIL: a residual did not vanish. Offending fields:")
-    for fn, vals in results.items():
-        if any(x != 0 for x in vals):
-            print(f"  {fn}: {vals}")
+    print("FAIL: a residual did not reduce to zero. Offending fields:")
+    for fn, num in results.items():
+        if num != 0:
+            print(f"  {fn}: {num}")
     return 1
 
 

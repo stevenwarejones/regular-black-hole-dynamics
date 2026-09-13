@@ -1,39 +1,61 @@
 #!/usr/bin/env python3
-"""INVARIANT CERTIFICATE: the q(v) variation is physical, not pure gauge.
+"""GAUGE CERTIFICATE: the q perturbation about a STATIC background is not pure gauge.
 
-Computes the scalar invariant (nabla r)^2 = g^{mu nu} d_mu r d_nu r on the
-solution and shows its dependence on q is nonzero. A pure coordinate
-transformation cannot change a scalar invariant, so a nonzero d/dq of (nabla r)^2
-certifies that varying q is not a residual coordinate freedom.
+The general slogan "a coordinate change cannot alter a scalar invariant" is not a
+sufficient perturbative gauge argument: a scalar's coordinate representation
+changes under a diffeomorphism by its Lie derivative, and for an already
+time-dependent solution a constant time translation gives a variation
+proportional to q'(v) while preserving the EF ansatz. We therefore make the
+precise, valid statement about a STATIC background.
+
+Setup: background with constant q0, perturbation q = q0 + eps p(v), delta Rf = 0.
+For a spherical diffeomorphism xi = xi^v d_v + xi^r d_r, preserving delta Rf = 0
+about Rf = r forces xi^r = 0. The static scalar I0 = (nabla r)^2 = f0(r) is
+independent of advanced time, so a pure-gauge perturbation obeying that condition
+has delta_xi I0 = xi^r f0'(r) = 0.
+
+But the proposed perturbation gives (this script checks the first variation
+symbolically)
+
+    delta I = 4 M ell^2 r^2 / (r^3 + 2 ell^2 q0)^2 * p(v),
+
+nonzero for M > 0 wherever p(v) != 0 on the nondegenerate positive-mass patch.
+Hence this perturbation about the static background is NOT pure gauge.
+
+Caveats kept explicit: M > 0 is required for the nonvanishing coefficient (the
+metric-invariant argument alone does not settle M = 0); a non-gauge perturbation
+is not automatically a propagating healthy mode or an instability.
 """
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 import sympy as sp
 from rbh import solution
-from rbh.model import ell, M, r, v
+from rbh.model import ell, M, r
 
 
 def main() -> int:
-    print("[invariant_distinction] (nabla r)^2 on the solution\n")
-    qsym = sp.Symbol("q0", positive=True)      # treat q as a parameter here
-    inv = solution.grad_r_squared(qfunc=qsym)  # = f = 1 - 2 M r^2 / (r^3 + 2 ell^2 q0)
-    inv = sp.simplify(inv)
-    dq = sp.simplify(sp.diff(inv, qsym))
-    print(f"  (nabla r)^2 = {inv}")
-    print(f"  d/dq (nabla r)^2 = {dq}")
+    print("[invariant_distinction] first variation of (nabla r)^2 about a static background\n")
+    dI, p, q0 = solution.delta_grad_r_squared_static()
+    expected = 4 * M * ell ** 2 * r ** 2 / (r ** 3 + 2 * ell ** 2 * q0) ** 2 * p
+    matches = sp.simplify(dI - expected) == 0
+    print(f"  computed delta I : {dI}")
+    print(f"  expected         : {expected}")
+    print(f"  match            : {matches}")
 
-    # nonzero for generic M, r, ell, q0
-    sample = {M: sp.Rational(1), r: sp.Rational(3), ell: sp.Rational(1), qsym: sp.Rational(3)}
-    val = sp.simplify(dq.subs(sample))
-    print(f"  value at (M,r,ell,q0)=(1,3,1,3): {val}")
+    # nonvanishing on the positive-mass nondegenerate patch (M > 0, p != 0)
+    sample = {M: sp.Rational(1), r: sp.Rational(3), ell: sp.Rational(1), q0: sp.Rational(3), p: sp.Rational(1)}
+    val = sp.simplify(dI.subs(sample))
+    nonzero = val != 0
+    print(f"  value at (M,r,ell,q0,p)=(1,3,1,3,1): {val}  (nonzero: {nonzero})")
 
-    ok = (dq != 0) and (val != 0)
     print()
-    if ok:
-        print("PASS: (nabla r)^2 depends on q, so the q(v) variation changes a "
-              "scalar invariant and is not a pure coordinate transformation.")
+    if matches and nonzero:
+        print("PASS: the first variation matches the displayed expression and is "
+              "nonzero for M > 0; the perturbation about the static background is "
+              "not pure gauge (delta Rf = 0 forces xi^r = 0, so a gauge mode would "
+              "give zero).")
         return 0
-    print("FAIL: invariant is q-independent.")
+    print("FAIL: gauge certificate not established.")
     return 1
 
 

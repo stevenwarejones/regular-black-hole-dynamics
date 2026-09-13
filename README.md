@@ -31,16 +31,20 @@ A=\Big(\tfrac{1-f}{2r}-\tfrac{q(v)}{4r^2}\Big)dv,\qquad
 B=\Big(\tfrac{1-f}{2r}+\tfrac{q(v)}{4r^2}\Big)dv .
 $$
 
-**Claim (certified).** For **constant `M`** and smooth `q(v)`, these fields
-solve *all eight* reduced Euler–Lagrange equations on `r>0` patches, with **no
-added matter** — including the angular equation, because the areal radius is
-kept as an independent field and is not gauge-fixed before variation.
+**Claim (certified).** For **constant `M`** and arbitrary smooth `q(v)`, these
+fields solve *all eight* reduced Euler–Lagrange equations on `r>0` patches, with
+**no added matter** — including the angular equation, because the areal radius
+is kept as an independent field and is not gauge-fixed before variation.
 
 The equations of motion are **rebuilt from the action** in
 [`src/rbh/model.py`](src/rbh/model.py); nothing is imported from an external
-derivation. Because each residual is a rational function of the fields,
-evaluating it on the solution at generic **rational** sample points in exact
-arithmetic returns exactly `0` iff it vanishes identically on the solution.
+derivation. The certificate is a **symbolic identity**, not a sample check:
+each residual is derived, the solution substituted, and `q(v)` together with all
+its `v`-derivatives replaced by **independent** symbols `Q0, Q1, …`; the reduced
+numerator is then required to be the zero polynomial in those jets and the
+symbolic parameters `r, M, ℓ`. That is a proof for *all* smooth `q(v)` on the
+patch. (Fixed-profile rational sample evaluations are retained only as a labeled
+secondary regression tripwire — they do not establish an identity.)
 
 ## What this is and is not
 

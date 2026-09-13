@@ -53,9 +53,9 @@ def solution_jet(mass=M, qfunc=q):
 def grad_r_squared(mass=M, qfunc=q):
     """The invariant (nabla r)^2 = g^{rr} on the solution.
 
-    For the EF metric with N = 1 this equals f = 1 - 2 M r^2 / D, which depends
-    on q. Its q-dependence distinguishes a q-perturbation from a pure coordinate
-    transformation (see proofs/invariant_distinction.py).
+    For the EF metric with N = 1 this equals f = 1 - 2 M r^2 / D. See
+    proofs/invariant_distinction.py for the static-background gauge argument that
+    uses it.
     """
     exprs = field_expressions(mass=mass, qfunc=qfunc)
     g = sp.Matrix([
@@ -63,3 +63,23 @@ def grad_r_squared(mass=M, qfunc=q):
         [exprs["g01"], exprs["g11"]],
     ])
     return sp.simplify(g.inv()[1, 1])
+
+
+def delta_grad_r_squared_static():
+    """First variation of the invariant (nabla r)^2 about a STATIC background.
+
+    Perturb q = q0 + eps * p (delta Rf = 0) about constant q0. Because
+    (nabla r)^2 depends on v only through q, its first variation is
+
+        delta I = d/deps (nabla r)^2 |_{eps=0}
+                = 4 M ell^2 r^2 / (r^3 + 2 ell^2 q0)^2 * p .
+
+    Returns (delta_I, p, q0). Compare against the displayed expression in
+    proofs/invariant_distinction.py. A spherical pure-gauge perturbation
+    preserving delta Rf = 0 has xi^r = 0 and cannot change this static scalar,
+    so a nonzero delta_I (for M > 0) certifies the perturbation is not pure gauge.
+    """
+    eps, p, q0 = sp.symbols("eps p q0", real=True)
+    I = grad_r_squared(qfunc=q0 + eps * p)
+    dI = sp.simplify(sp.diff(I, eps).subs(eps, 0))
+    return dI, p, q0
